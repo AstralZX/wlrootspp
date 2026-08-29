@@ -71,6 +71,16 @@ public:
 	void keyboard_notify_key(uint32_t time, uint32_t keycode, enum wl_keyboard_key_state state) {
 		wlr_seat_keyboard_notify_key(m_seat, time, keycode, state);
 	}
+	void keyboard_notify_enter(struct wlr_surface* surface,
+			uint32_t* keycodes = nullptr, size_t num_keycodes = 0,
+			struct wlr_keyboard_modifiers* modifiers = nullptr) {
+		wlr_seat_keyboard_notify_enter(m_seat, surface, keycodes, num_keycodes, modifiers);
+	}
+	void keyboard_clear_focus() { wlr_seat_keyboard_clear_focus(m_seat); }
+	void pointer_notify_enter(struct wlr_surface* surface, double sx, double sy) {
+		wlr_seat_pointer_notify_enter(m_seat, surface, sx, sy);
+	}
+	void pointer_clear_focus() { wlr_seat_pointer_clear_focus(m_seat); }
 	void pointer_notify_motion(uint32_t time, double sx, double sy) {
 		wlr_seat_pointer_notify_motion(m_seat, time, sx, sy);
 	}

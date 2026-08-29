@@ -19,11 +19,25 @@ public:
 	const char* make() const { return m_output->make; }
 	const char* model() const { return m_output->model; }
 
+	int width() const { return m_output->width; }
+	int height() const { return m_output->height; }
+	enum wl_output_transform transform() const { return m_output->transform; }
+	struct wlr_output_mode* current_mode() const { return m_output->current_mode; }
+
 	struct wlr_output_mode* preferred_mode() const {
 		return wlr_output_preferred_mode(m_output);
 	}
 	bool set_preferred_mode() {
 		struct wlr_output_mode* mode = wlr_output_preferred_mode(m_output);
+		if (!mode) return false;
+		struct wlr_output_state state;
+		wlr_output_state_init(&state);
+		wlr_output_state_set_mode(&state, mode);
+		bool ok = wlr_output_commit_state(m_output, &state);
+		wlr_output_state_finish(&state);
+		return ok;
+	}
+	bool set_mode(struct wlr_output_mode* mode) {
 		if (!mode) return false;
 		struct wlr_output_state state;
 		wlr_output_state_init(&state);

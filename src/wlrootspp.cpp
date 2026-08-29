@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 #include "wlr/node.hpp"
+#include "wlr/box.hpp"
+#include "wlr/xdg_decoration.hpp"
 #include <string>
 #include <wlr/version.h>
 

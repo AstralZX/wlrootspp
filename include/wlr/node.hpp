@@ -4,7 +4,7 @@
 #include <utility>
 
 #include "wlr/wlr.hpp"
-#include "wlr/scene.hpp"
+#include "wlr/color.hpp"
 
 namespace wlr {
 
@@ -34,16 +34,6 @@ public:
 
 protected:
 	struct wlr_scene_node* m_node;
-};
-
-class Tree : public Node {
-public:
-	Tree(struct wlr_scene_tree* tree) : Node(&tree->node), m_tree(tree) {}
-	struct wlr_scene_tree* raw() const { return m_tree; }
-	void reparent(Node& n) { wlr_scene_node_reparent(n.raw(), m_tree); }
-
-private:
-	struct wlr_scene_tree* m_tree;
 };
 
 class Rect : public Node {
@@ -125,6 +115,24 @@ public:
 
 private:
 	struct wlr_scene_surface* m_surface;
+};
+
+class Tree : public Node {
+public:
+	Tree(struct wlr_scene_tree* tree) : Node(&tree->node), m_tree(tree) {}
+	struct wlr_scene_tree* raw() const { return m_tree; }
+	void reparent(Node& n) { wlr_scene_node_reparent(n.raw(), m_tree); }
+
+	Tree add_tree() { return Tree{wlr_scene_tree_create(m_tree)}; }
+	Rect add_rect(int w, int h, const Color& c) {
+		float col[4]; c.apply(col);
+		return Rect{wlr_scene_rect_create(m_tree, w, h, col)};
+	}
+	Buffer add_buffer() { return Buffer{wlr_scene_buffer_create(m_tree, nullptr)}; }
+	Surface add_surface(struct wlr_surface* s) { return Surface{wlr_scene_surface_create(m_tree, s)}; }
+
+private:
+	struct wlr_scene_tree* m_tree;
 };
 
 }
